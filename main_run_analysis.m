@@ -3,9 +3,9 @@ clear all;
 
 %% create list with info on path, animals and acquisition day of each TS
 %list of days of acquisitions
-data_path = 'C:\Users\Pedro\Next Proyect\Whisking on Texture\Data';
+data_path = 'C:\Users\plagomarsino\Pedro\Whisking on Texture\Data';
 %data_path = 'C:\Users\Pedro\for Pedro\example dataset';
-save_path = 'C:\Users\Pedro\Next Proyect\Whisking on Texture\Analysis';
+save_path = 'C:\Users\plagomarsino\Pedro\Whisking on Texture\Analysis';
 %save_path = 'C:\Users\Pedro\for Pedro\example analyses\20180302\example';
 curr_dir = pwd;
 list_day = dir(data_path);
@@ -235,7 +235,7 @@ end
 
 for id_TS = 1:length(exp_list)
     load([exp_list(id_TS).save_path 'params.mat']);
-    %if params.stimulus == 0                      %Mod Pedro (the exception for the stimulus is already in the function plot_state_var_and_ca) 
+    %if params.stimulus == 0 
     load([exp_list(id_TS).save_path 'raw_state_var.mat']);
     load([exp_list(id_TS).save_path 'processed_var.mat']);
     figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
