@@ -291,7 +291,7 @@ for id_TS = 1:length(exp_list)
         %build behavioral state vector
         analyses.behavior = behavioral_state_vector(data,params);
         %compute ca activity across states
-        %analyses.single_cell = calcium_state_modulation(data,analyses,params);
+        analyses.single_cell = calcium_state_modulation(data,analyses,params);
         
         figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
         plot_states_pupil_ca(data,analyses,params);

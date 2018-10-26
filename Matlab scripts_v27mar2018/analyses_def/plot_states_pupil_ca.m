@@ -64,7 +64,7 @@ if params.stimulus==0
 
     title('Average activity');
     xlabel('time from whisking onset (s)'); ylabel('dF/F');
-%     xlim([time(1) time(end)]);
+%    xlim([time(1) time(end)]);
     set(gca,'FontSize',10);
     
 else
@@ -78,14 +78,17 @@ else
         1 1 0]);      %// yellow
     pie2 = subplot(2,4,2);  
     pie(analyses.behavior.count(:,2:end)); % _Q_W_T_WL_WT_WLT_LT_L
-    %legend('Whisking','Texture','Whisking + Locomotion','Whisking + Texture','Whisking + Locomotion + Texture','Locomotion + Texture','Locomotion');
     legend('W','T','W+L','W+T','W+L+T','L+T','L','Location','west');
     %colormap(pie2,[
     %    1 .5 0;      %// orange
     %    1 0 0;      %// red
     %    1 1 0]);      %// yellow
     set(gca,'FontSize',10)
-    
+
+    % mean ROIs activity across behavioral states
+    %calcium1 = subplot(2,4,[5 6]);
+    %plot_df_f_across_states(analyses,params);
+    %title('Mean single cell fluorescence across states');
     
 end
 

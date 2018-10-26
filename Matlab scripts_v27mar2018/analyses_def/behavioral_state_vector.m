@@ -36,6 +36,6 @@ else
     
     %build states vector
     state_vector = zeros(length(data.time_ca),1);
-    state_vector = state_vector + data.whisking + 2*data.locomotion;
+    state_vector = state_vector + data.whisking + 2*data.locomotion + .5*data.stimulus;
     behavior.states_vector = state_vector;
 end
