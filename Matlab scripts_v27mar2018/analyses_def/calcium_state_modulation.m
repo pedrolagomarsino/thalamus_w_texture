@@ -6,7 +6,8 @@ if params.stimulus == 0
     [single_cell.calcium.mean] = singleCellActivity(data,...
         analyses,params);
 else
-    
+    [single_cell.calcium.mean] = singleCellActivity(data,...
+        analyses,params);
 end
 end
 

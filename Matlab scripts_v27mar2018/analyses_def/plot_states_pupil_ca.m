@@ -86,9 +86,9 @@ else
     set(gca,'FontSize',10)
 
     % mean ROIs activity across behavioral states
-    %calcium1 = subplot(2,4,[5 6]);
-    %plot_df_f_across_states(analyses,params);
-    %title('Mean single cell fluorescence across states');
+    calcium1 = subplot(2,4,[5 6]);
+    plot_df_f_across_states(analyses,params);
+    title('Mean single cell fluorescence across states');
     
 end
 

@@ -3,9 +3,9 @@ clear all;
 
 %% create list with info on path, animals and acquisition day of each TS
 %list of days of acquisitions
-data_path = 'C:\Users\plagomarsino\Pedro\Thalamus proyect\Whisking on Texture\Data';
+data_path = 'C:\Users\plagomarsino\work\Thalamus proyect\Whisking on Texture\Data';
 %data_path = 'C:\Users\Pedro\for Pedro\example dataset';
-save_path = 'C:\Users\plagomarsino\Pedro\Thalamus proyect\Whisking on Texture\Analysis';
+save_path = 'C:\Users\plagomarsino\work\Thalamus proyect\Whisking on Texture\Analysis';
 %save_path = 'C:\Users\Pedro\for Pedro\example analyses\20180302\example';
 curr_dir = pwd;
 list_day = dir(data_path);
@@ -38,7 +38,7 @@ for id_day = 1:length(list_day)
         else
             cd([list_mouse(id_mouse).folder '\' list_mouse(id_mouse).name]);
             list_TS = dir('TSeries*');
-            cd(curr_dir);
+            cd(curr_dir);   
         end
         
         %for each TS save the specifics to load it
