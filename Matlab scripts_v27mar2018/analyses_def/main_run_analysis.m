@@ -269,7 +269,7 @@ for id_TS = 1:length(exp_list)
     if exist([exp_list(id_TS).save_path 'analyses.mat'],'file')
         load([exp_list(id_TS).save_path 'analyses.mat']);
     end
-    %run analyses only for data without stimulus
+    
     if params.stimulus == 0
         load([exp_list(id_TS).save_path 'processed_var.mat']);
         

@@ -69,16 +69,16 @@ if params.stimulus==0
     
 else
     %behavioral states distribution pies
-    pie1 = subplot(2,4,1);
+    pie1 = subplot(2,2,1);
     pie([analyses.behavior.count(:,1),analyses.behavior.count(:,3), sum(analyses.behavior.count(:,[2,4:end]))]);
-    legend('Quiet awake','Quiet Texture','Active awake','Location','east');
+    legend('Quiet awake','Quiet Texture','Active awake','Location','westoutside');
     %Pedro mod
     colormap(pie1, [0 .5 .5; %//dark green
         0 0.3 0.3;    %// even darker green
         1 1 0]);      %// yellow
-    pie2 = subplot(2,4,2);  
+    pie2 = subplot(2,2,2);  
     pie(analyses.behavior.count(:,2:end)); % _Q_W_T_WL_WT_WLT_LT_L
-    legend('W','T','W+L','W+T','W+L+T','L+T','L','Location','west');
+    legend('W','T','W+L','W+T','W+L+T','L+T','L','Location','westoutside');
     %colormap(pie2,[
     %    1 .5 0;      %// orange
     %    1 0 0;      %// red
@@ -86,7 +86,7 @@ else
     set(gca,'FontSize',10)
 
     % mean ROIs activity across behavioral states
-    calcium1 = subplot(2,4,[5 6]);
+    calcium1 = subplot(2,2,3);
     plot_df_f_across_states(analyses,params);
     title('Mean single cell fluorescence across states');
     
