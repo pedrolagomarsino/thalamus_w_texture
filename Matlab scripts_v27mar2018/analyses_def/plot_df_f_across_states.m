@@ -49,15 +49,11 @@ else
         end
     end
     p_stars = p_stars(1:end-1,2:end);
-    ha = subplot(2,2,4);
+    ha = subplot(2,9,16:18);
     pos = get(ha,'Position');
     un = get(ha,'Units');
     delete(ha)
     p_table = uitable('Data',p_stars,'ColumnName',Variables(2:end),'RowName',Variables(1:end-1),'Units',un,'Position',pos,'FontSize',12);
     p_table.Position(3:4) = p_table.Extent(3:4);
-%     for i = 1:size(c,1)
-%         if c(i,end)<.05
-%             line(c(i,1:2),(0.01 + max(mean(analyses.single_cell.calcium.mean(:,c(i,1:2)),1)+std(analyses.single_cell.calcium.mean(:,c(i,1:2)),[],1)/sqrt(size(analyses.single_cell.calcium.mean(:,c(i,1:2)),1))))*ones(2,1),'Color','k');
-%         end
-%     end
+    
 end
