@@ -79,9 +79,9 @@ else
     pie(analyses.behavior.count(:,2:end)); % _Q_W_T_WL_WT_WLT_LT_L
     legend('W','T','W+L','W+T','W+L+T','L+T','L','Location','westoutside');
     set(gca,'FontSize',10)
-    
+    %add into another figure
     [Pupil_StateMean, Pupil_Statesem] = grpstats(data.pupil_norm,analyses.behavior.states_vector,{'nanmean','sem'},'Alpha',0.05);
-    [~,~,Stats_pupil]= anova1(data.pupil_norm,analyses.behavior.states_vector,[],'off');
+    [~,~,Stats_pupil]= anova1(data.pupil_norm,analyses.behavior.states_vector,'off');
     [p_pupil_means,~,~] = multcompare(Stats_pupil,'Display','off');
     pupil_means = subplot(2,9,4:6);
     bar(Pupil_StateMean);
@@ -89,6 +89,30 @@ else
     errorbar(Pupil_StateMean,Pupil_Statesem,'lineStyle','none');
     ylabel('Norm Pupil size');
     set(gca,'XTickLabel',{'Q','T','W','WT','LT','WL','WLT'},'FontSize',10);% _Q_W_T_WL_WT_WLT_LT_L
+    set(gca,'YLim',[min(Pupil_StateMean)-(max(Pupil_StateMean)-min(Pupil_StateMean)),max(Pupil_StateMean)+2*max(Pupil_Statesem)])
+    title('Mean pupil diameter across states')
+    
+     %Build table with p-values
+    Variables = {'Q','T','W','WT','LT','WL','WLT'};
+    p_stars = cell(length(Variables),length(Variables));
+    for i = 1:size(p_pupil_means,1)
+        if p_pupil_means(i,6)>0.05
+            p_stars{p_pupil_means(i,1),p_pupil_means(i,2)} = 'ns';
+        elseif p_pupil_means(i,6)>0.01
+            p_stars{p_pupil_means(i,1),p_pupil_means(i,2)} = '*';
+        elseif p_pupil_means(i,6)>0.001
+            p_stars{p_pupil_means(i,1),p_pupil_means(i,2)} = '**';
+        else
+            p_stars{p_pupil_means(i,1),p_pupil_means(i,2)} = '***';
+        end
+    end
+    p_stars = p_stars(1:end-1,2:end);
+    ha = subplot(2,9,7:9);
+    pos = get(ha,'Position');
+    un = get(ha,'Units');
+    delete(ha)
+    p_table = uitable('Data',p_stars,'ColumnName',Variables(2:end),'RowName',Variables(1:end-1),'Units',un,'Position',pos,'FontSize',12);
+    p_table.Position(3:4) = p_table.Extent(3:4);
     
     % mean ROIs activity across behavioral states
     calcium1 = subplot(2,9,13:15);
