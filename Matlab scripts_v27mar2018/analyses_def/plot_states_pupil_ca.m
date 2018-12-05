@@ -80,8 +80,9 @@ else
     legend('W','T','W+L','W+T','W+L+T','L+T','L','Location','westoutside');
     set(gca,'FontSize',10)
     %add into another figure
-    [Pupil_StateMean, Pupil_Statesem] = grpstats(data.pupil_norm,analyses.behavior.states_vector,{'nanmean','sem'},'Alpha',0.05);
-    [~,~,Stats_pupil]= anova1(data.pupil_norm,analyses.behavior.states_vector,'off');
+    pupil_norm = data.pupil/max(data.pupil);
+    [Pupil_StateMean, Pupil_Statesem] = grpstats(pupil_norm,analyses.behavior.states_vector,{'nanmean','sem'},'Alpha',0.05);
+    [~,~,Stats_pupil]= anova1(pupil_norm,analyses.behavior.states_vector,'off');
     [p_pupil_means,~,~] = multcompare(Stats_pupil,'Display','off');
     pupil_means = subplot(2,9,4:6);
     bar(Pupil_StateMean);

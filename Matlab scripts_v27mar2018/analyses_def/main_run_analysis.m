@@ -193,7 +193,7 @@ for id_TS = 1:length(exp_list)
     %import parameters from processed TSeries
     params.framePeriod = data_ca.framePeriod;
     params.numROIs = data_ca.numero_neuronas; %num ROIs
-    params.pupil_px_mm = 44.7;  %set the size in mm of one pixel for the pupil tracking
+    params.pupil_px_mm = 44.7;  %set the size in mm of one pixel for the pupil tracking (number of pixels in one mm?)
     params.usePeaks = 1;
     if contains(exp_list(id_TS).exp_day,'20180216') %set the size in um of one pixel of the 2P data (stored wrongly in the metadata)
         params.mm_px = 2.194;
@@ -295,9 +295,9 @@ for id_TS = 1:length(exp_list)
         
         figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
         plot_states_pupil_ca(data,analyses,params);
-        %saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_states_pupil_ca.fig']);
-        %saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_states_pupil_ca.png']);
-        %close
+        saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_states_pupil_ca.fig']);
+        saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_states_pupil_ca.png']);
+        close
         
         [data,analyses] = cut_L_only_frames(data,analyses);
     end
