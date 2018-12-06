@@ -153,7 +153,7 @@ for id_TS = 1:length(exp_list)
     end
     curr_dir = pwd;
     cd(folder);
-    file_name = dir('*no_stim_times.mat');
+    file_name = dir('*no_stim_times.mat');  
     if isempty(file_name)
         file_name = dir('*rois_for_samples.mat');
     end

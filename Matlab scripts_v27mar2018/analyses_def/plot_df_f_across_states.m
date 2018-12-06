@@ -28,24 +28,32 @@ if params.stimulus == 0
         end
     end
 else
-    bar(mean(analyses.single_cell.calcium.mean,1));
+    % not all recordings have all states, build a way of indexing actual states out of all possible states (excluding only locomotion)
+    Idx = [0,.5,1,1.5,2.5,3,3.5;1:7];
+    states = unique(analyses.behavior.states_vector);
+    % Variable_names has zeros in the columns of non present states
+    Variable_names = {'Q','T','W','WT','LT','WL','WLT'};
+    Variables = zeros(size(analyses.single_cell.calcium.mean,1),length(Variable_names));
+    for i = 1:length(states)
+        Variables(:,Idx(2,Idx(1,:)==states(i))) = analyses.single_cell.calcium.mean(:,i);
+    end
+    bar(mean(Variables,1));
     hold on; 
-    errorbar(mean(analyses.single_cell.calcium.mean,1),std(analyses.single_cell.calcium.mean,[],1)/sqrt(size(analyses.single_cell.calcium.mean,1)),...
+    errorbar(mean(Variables,1),std(Variables,[],1)/sqrt(size(Variables,1)),...
         'lineStyle','none');
     ylabel('df/f');
-    set(gca,'XTickLabel',{'Q','T','W','WT','LT','WL','WLT'},'FontSize',10);% _Q_W_T_WL_WT_WLT_LT_L
+    set(gca,'XTickLabel',Variable_names,'FontSize',10);% _Q_W_T_WL_WT_WLT_LT_L
     %Build table with p-values
-    Variables = {'Q','T','W','WT','LT','WL','WLT'};
-    p_stars = cell(length(Variables),length(Variables));
+    p_stars = cell(length(Variable_names),length(Variable_names));
     for i = 1:size(c,1)
         if c(i,6)>0.05
-            p_stars{c(i,1),c(i,2)} = 'ns';
+            p_stars{Idx(2,Idx(1,:)==states(c(i,1))),Idx(2,Idx(1,:)==states(c(i,2)))} = 'ns';
         elseif c(i,6)>0.01
-            p_stars{c(i,1),c(i,2)} = '*';
+            p_stars{Idx(2,Idx(1,:)==states(c(i,1))),Idx(2,Idx(1,:)==states(c(i,2)))} = '*';
         elseif c(i,6)>0.001
-            p_stars{c(i,1),c(i,2)} = '**';
+            p_stars{Idx(2,Idx(1,:)==states(c(i,1))),Idx(2,Idx(1,:)==states(c(i,2)))} = '**';
         else
-            p_stars{c(i,1),c(i,2)} = '***';
+            p_stars{Idx(2,Idx(1,:)==states(c(i,1))),Idx(2,Idx(1,:)==states(c(i,2)))} = '***';
         end
     end
     p_stars = p_stars(1:end-1,2:end);
@@ -53,7 +61,7 @@ else
     pos = get(ha,'Position');
     un = get(ha,'Units');
     delete(ha)
-    p_table = uitable('Data',p_stars,'ColumnName',Variables(2:end),'RowName',Variables(1:end-1),'Units',un,'Position',pos,'FontSize',12);
+    p_table = uitable('Data',p_stars,'ColumnName',Variable_names(2:end),'RowName',Variable_names(1:end-1),'Units',un,'Position',pos,'FontSize',12);
     p_table.Position(3:4) = p_table.Extent(3:4);
     
 end
