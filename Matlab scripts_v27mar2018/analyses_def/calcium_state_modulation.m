@@ -6,7 +6,8 @@ if params.stimulus == 0
     [single_cell.calcium.mean] = singleCellActivity(data,...
         analyses,params);
 else
-    
+    [single_cell.calcium.mean] = singleCellActivity(data,...
+        analyses,params);
 end
 end
 
@@ -41,10 +42,10 @@ cellMean(isnan(cellMean))=0;
 if isempty(find(unique(state_vector)==0))
     cellMean = [zeros(size(cellMean,1),1) cellMean];
 end
-if isempty(find(unique(state_vector)==1))
-    cellMean = [cellMean(:,1) zeros(size(cellMean,1),1) cellMean(:,2:end)];
-end
-if isempty(find(unique(state_vector)==3))
-    cellMean = [cellMean(:,1:2) zeros(size(cellMean,1),1)];
-end
+% if isempty(find(unique(state_vector)==1))
+%     cellMean = [cellMean(:,1) zeros(size(cellMean,1),1) cellMean(:,2:end)];
+% end
+% if isempty(find(unique(state_vector)==3))
+%     cellMean = [cellMean(:,1:2) zeros(size(cellMean,1),1)];
+% end
 end

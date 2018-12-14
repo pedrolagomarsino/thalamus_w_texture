@@ -3,9 +3,9 @@ clear all;
 
 %% create list with info on path, animals and acquisition day of each TS
 %list of days of acquisitions
-data_path = 'C:\Users\plagomarsino\Pedro\Thalamus proyect\Whisking on Texture\Data';
+data_path = 'C:\Users\plagomarsino\work\Thalamus proyect\Whisking on Texture\Data';
 %data_path = 'C:\Users\Pedro\for Pedro\example dataset';
-save_path = 'C:\Users\plagomarsino\Pedro\Thalamus proyect\Whisking on Texture\Analysis';
+save_path = 'C:\Users\plagomarsino\work\Thalamus proyect\Whisking on Texture\Analysis';
 %save_path = 'C:\Users\Pedro\for Pedro\example analyses\20180302\example';
 curr_dir = pwd;
 list_day = dir(data_path);
@@ -38,7 +38,7 @@ for id_day = 1:length(list_day)
         else
             cd([list_mouse(id_mouse).folder '\' list_mouse(id_mouse).name]);
             list_TS = dir('TSeries*');
-            cd(curr_dir);
+            cd(curr_dir);   
         end
         
         %for each TS save the specifics to load it
@@ -153,7 +153,7 @@ for id_TS = 1:length(exp_list)
     end
     curr_dir = pwd;
     cd(folder);
-    file_name = dir('*no_stim_times.mat');
+    file_name = dir('*no_stim_times.mat');  
     if isempty(file_name)
         file_name = dir('*rois_for_samples.mat');
     end
@@ -193,7 +193,7 @@ for id_TS = 1:length(exp_list)
     %import parameters from processed TSeries
     params.framePeriod = data_ca.framePeriod;
     params.numROIs = data_ca.numero_neuronas; %num ROIs
-    params.pupil_px_mm = 44.7;  %set the size in mm of one pixel for the pupil tracking
+    params.pupil_px_mm = 44.7;  %set the size in mm of one pixel for the pupil tracking (number of pixels in one mm?)
     params.usePeaks = 1;
     if contains(exp_list(id_TS).exp_day,'20180216') %set the size in um of one pixel of the 2P data (stored wrongly in the metadata)
         params.mm_px = 2.194;
@@ -269,7 +269,7 @@ for id_TS = 1:length(exp_list)
     if exist([exp_list(id_TS).save_path 'analyses.mat'],'file')
         load([exp_list(id_TS).save_path 'analyses.mat']);
     end
-    %run analyses only for data without stimulus
+    
     if params.stimulus == 0
         load([exp_list(id_TS).save_path 'processed_var.mat']);
         
@@ -291,13 +291,13 @@ for id_TS = 1:length(exp_list)
         %build behavioral state vector
         analyses.behavior = behavioral_state_vector(data,params);
         %compute ca activity across states
-        %analyses.single_cell = calcium_state_modulation(data,analyses,params);
+        analyses.single_cell = calcium_state_modulation(data,analyses,params);
         
         figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
         plot_states_pupil_ca(data,analyses,params);
-        %saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_states_pupil_ca.fig']);
-        %saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_states_pupil_ca.png']);
-        %close
+        saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_states_pupil_ca.fig']);
+        saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_states_pupil_ca.png']);
+        close
         
         [data,analyses] = cut_L_only_frames(data,analyses);
     end

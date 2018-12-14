@@ -95,7 +95,7 @@ else
     end
     
     ax3 = subplot(6,1,3); %plot pupil diameter
-    plot(raw_state_var.time,raw_state_var.pupil/params.pupil_px_mm,'k','LineWidth',2);
+    plot(raw_state_var.time,raw_state_var.pupil,'k','LineWidth',2); %/params.pupil_px_mm
     colorbar;
     title('Pupil diameter'); ylabel('[mm]');
 %     ylim([0 2])
