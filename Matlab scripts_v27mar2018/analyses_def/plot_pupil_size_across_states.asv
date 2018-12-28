@@ -1,14 +1,13 @@
 function [] = plot_pupil_size_across_states(data,analyses)
 
-states_vector = analyses.behavior.states_vector(analyses.behavior.states_vector~=2);
 pupil_norm = data.pupil/max(data.pupil);
-pupil_norm(analyses.behavior.states_vector==2)=[];
+states_vector = analyses.behavior.states_vector(analyses.behavior.states_vector~=2);
 [Pupil_StateMean, Pupil_Statesem] = grpstats(pupil_norm,states_vector,{'nanmean','sem'},'Alpha',0.05);
-[~,~,Stats_pupil]= anova1(pupil_norm,states_vector,'off');
+[~,~,Stats_pupil]= anova1(pupil_norm,analyses.behavior.states_vector,'off');
 [p_pupil_means,~,~] = multcompare(Stats_pupil,'Display','off');
 
 Idx = [0,.5,1,1.5,2.5,3,3.5;1:7];
-states = unique(states_vector);
+states = unique(analyses.behavior.states_vector);
 %states(states==2)=[];
 % Variable_names has zeros in the columns of non present states
 Variable_names = {'Q','T','W','WT','LT','WL','WLT'};

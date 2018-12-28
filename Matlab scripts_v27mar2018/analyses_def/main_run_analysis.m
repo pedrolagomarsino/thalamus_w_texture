@@ -310,144 +310,144 @@ end
 
 %addpath(genpath('/home/calcium/Monica/endoscopes_project/code/infotoolbox - v.1.1.0b3/'));
 %Pedro mod
-for id_TS = 1:length(exp_list)
-    load([exp_list(id_TS).save_path 'params.mat']);
-    if exist([exp_list(id_TS).save_path 'analyses.mat'],'file')
-        load([exp_list(id_TS).save_path 'analyses.mat']);
-    
-        %run analyses only for data without stimulus
-        if params.stimulus == 0
-            load([exp_list(id_TS).save_path 'data_noL.mat']);
-            analyses = whisking_info_rois(data,analyses,params);
-%             analyses = locomotion_info_rois(data,analyses,params);
-            
-            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
-            plot_info_map_single_exp(data,analyses,params);
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_map.fig']);
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_map.png']);
-            close
-            
-            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
-            plot_info_distance_single_exp(data,analyses,params);
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_distance.fig']);
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_distance.png']);
-            close
-            
-            save([exp_list(id_TS).save_path 'analyses.mat'], 'analyses');
-        end
-    else
-        error('This dataset does not have behavioral analyses!')
-    end
-end
-
-%% compute single ROI information theory for all states
-
-for id_TS = 1:length(exp_list)
-    load([exp_list(id_TS).save_path 'params.mat']);
-    if exist([exp_list(id_TS).save_path 'analyses.mat'],'file')
-        load([exp_list(id_TS).save_path 'analyses.mat']);
-    
-        %run analyses only for data without stimulus
-        if params.stimulus == 0
-            load([exp_list(id_TS).save_path 'data_noL.mat']);
-            analyses = states_info_rois(data,analyses,params);
-            
-            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
-            plot_info_states_hist(data,analyses,params);
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_all_states.fig']);
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_all_states.png']);
-            close
-
+% for id_TS = 1:length(exp_list)
+%     load([exp_list(id_TS).save_path 'params.mat']);
+%     if exist([exp_list(id_TS).save_path 'analyses.mat'],'file')
+%         load([exp_list(id_TS).save_path 'analyses.mat']);
+%     
+%         %run analyses only for data without stimulus
+%         if params.stimulus == 0
+%             load([exp_list(id_TS).save_path 'data_noL.mat']);
+%             analyses = whisking_info_rois(data,analyses,params);
+% %             analyses = locomotion_info_rois(data,analyses,params);
+%             
 %             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
-%             plot_info_states_map(data,analyses,params);
-%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_map_all_states.fig']);
-%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_map_all_states.png']);
+%             plot_info_map_single_exp(data,analyses,params);
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_map.fig']);
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_map.png']);
 %             close
-            
-            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
-            plot_info_map_W_and_WL(data,analyses,params);
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_map_W_L_only.fig']);
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_map_aW_L_only.png']);
-            close
-
-
-            save([exp_list(id_TS).save_path 'analyses.mat'], 'analyses');
-        end
-    else
-        error('This dataset does not have behavioral analyses!')
-    end
-end
-
-%% fisher LDA decoder based on ROIs DF/F activity
-
-for id_TS = 1:length(exp_list)
-    load([exp_list(id_TS).save_path 'params.mat']);
-    if exist([exp_list(id_TS).save_path 'analyses.mat'],'file')
-        load([exp_list(id_TS).save_path 'analyses.mat']);
-    
-        %run analyses only for data without stimulus
-        if params.stimulus == 0
-            load([exp_list(id_TS).save_path 'data_noL.mat']);
-
-            analyses = whisking_lda_decoder(data, analyses, params);
-            analyses = Q_W_WL_lda_decoder(data, analyses, params);
-            
-            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
-            plot_decoding_map_single_exp(data,analyses,params);
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_decoding_map.fig']);
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_decoding_map.png']);
-            close
-            
-            save([exp_list(id_TS).save_path 'analyses.mat'], 'analyses');
-        end
-    else
-        error('This dataset does not have behavioral analyses!')
-    end
-end
-
-%% correlation analyses
-
-for id_TS = 1:length(exp_list)
-    load([exp_list(id_TS).save_path 'params.mat']);
-    if exist([exp_list(id_TS).save_path 'analyses.mat'],'file')
-        load([exp_list(id_TS).save_path 'analyses.mat']);
-    
-        %run analyses only for data without stimulus
-        if params.stimulus == 0
-            load([exp_list(id_TS).save_path 'data_noL.mat']);
-
-            analyses = pairwise_correlations(data,analyses,params);
-            [analyses, params] = correlations_distance_count(analyses,params);
-            
-            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
-            plot_correlations_2(analyses,params)
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_states.png']);
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_states.fig']);
-            close
-            
-            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
-            plot_correlations_1(analyses,params)
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations.png']);
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations.fig']);
-            close
-            
-            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
-            [analyses, params] = correlations_distance_count_2(analyses,params);
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_sign.png']);
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_sign.fig']);
-            close
-            
-            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
-            summary_corr_plot(analyses,params);
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_summary.png']);
-            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_summary.fig']);
-            close
-            
-            
-            save([exp_list(id_TS).save_path 'analyses.mat'], 'analyses');
-            save([exp_list(id_TS).save_path 'params.mat'], 'params');
-        end
-    else
-        error('This dataset does not have behavioral analyses!')
-    end
-end
+%             
+%             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+%             plot_info_distance_single_exp(data,analyses,params);
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_distance.fig']);
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_distance.png']);
+%             close
+%             
+%             save([exp_list(id_TS).save_path 'analyses.mat'], 'analyses');
+%         end
+%     else
+%         error('This dataset does not have behavioral analyses!')
+%     end
+% end
+% 
+% %% compute single ROI information theory for all states
+% 
+% for id_TS = 1:length(exp_list)
+%     load([exp_list(id_TS).save_path 'params.mat']);
+%     if exist([exp_list(id_TS).save_path 'analyses.mat'],'file')
+%         load([exp_list(id_TS).save_path 'analyses.mat']);
+%     
+%         %run analyses only for data without stimulus
+%         if params.stimulus == 0
+%             load([exp_list(id_TS).save_path 'data_noL.mat']);
+%             analyses = states_info_rois(data,analyses,params);
+%             
+%             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+%             plot_info_states_hist(data,analyses,params);
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_all_states.fig']);
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_all_states.png']);
+%             close
+% 
+% %             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+% %             plot_info_states_map(data,analyses,params);
+% %             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_map_all_states.fig']);
+% %             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_map_all_states.png']);
+% %             close
+%             
+%             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+%             plot_info_map_W_and_WL(data,analyses,params);
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_map_W_L_only.fig']);
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_info_map_aW_L_only.png']);
+%             close
+% 
+% 
+%             save([exp_list(id_TS).save_path 'analyses.mat'], 'analyses');
+%         end
+%     else
+%         error('This dataset does not have behavioral analyses!')
+%     end
+% end
+% 
+% %% fisher LDA decoder based on ROIs DF/F activity
+% 
+% for id_TS = 1:length(exp_list)
+%     load([exp_list(id_TS).save_path 'params.mat']);
+%     if exist([exp_list(id_TS).save_path 'analyses.mat'],'file')
+%         load([exp_list(id_TS).save_path 'analyses.mat']);
+%     
+%         %run analyses only for data without stimulus
+%         if params.stimulus == 0
+%             load([exp_list(id_TS).save_path 'data_noL.mat']);
+% 
+%             analyses = whisking_lda_decoder(data, analyses, params);
+%             analyses = Q_W_WL_lda_decoder(data, analyses, params);
+%             
+%             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+%             plot_decoding_map_single_exp(data,analyses,params);
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_decoding_map.fig']);
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_decoding_map.png']);
+%             close
+%             
+%             save([exp_list(id_TS).save_path 'analyses.mat'], 'analyses');
+%         end
+%     else
+%         error('This dataset does not have behavioral analyses!')
+%     end
+% end
+% 
+% %% correlation analyses
+% 
+% for id_TS = 1:length(exp_list)
+%     load([exp_list(id_TS).save_path 'params.mat']);
+%     if exist([exp_list(id_TS).save_path 'analyses.mat'],'file')
+%         load([exp_list(id_TS).save_path 'analyses.mat']);
+%     
+%         %run analyses only for data without stimulus
+%         if params.stimulus == 0
+%             load([exp_list(id_TS).save_path 'data_noL.mat']);
+% 
+%             analyses = pairwise_correlations(data,analyses,params);
+%             [analyses, params] = correlations_distance_count(analyses,params);
+%             
+%             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+%             plot_correlations_2(analyses,params)
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_states.png']);
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_states.fig']);
+%             close
+%             
+%             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+%             plot_correlations_1(analyses,params)
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations.png']);
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations.fig']);
+%             close
+%             
+%             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+%             [analyses, params] = correlations_distance_count_2(analyses,params);
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_sign.png']);
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_sign.fig']);
+%             close
+%             
+%             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+%             summary_corr_plot(analyses,params);
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_summary.png']);
+%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_summary.fig']);
+%             close
+%             
+%             
+%             save([exp_list(id_TS).save_path 'analyses.mat'], 'analyses');
+%             save([exp_list(id_TS).save_path 'params.mat'], 'params');
+%         end
+%     else
+%         error('This dataset does not have behavioral analyses!')
+%     end
+% end

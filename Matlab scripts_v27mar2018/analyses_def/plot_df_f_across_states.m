@@ -30,7 +30,8 @@ if params.stimulus == 0
 else
     % not all recordings have all states, build a way of indexing actual states out of all possible states (excluding only locomotion)
     Idx = [0,.5,1,1.5,2.5,3,3.5;1:7];
-    states = unique(analyses.behavior.states_vector);
+    states_vector = analyses.behavior.states_vector(analyses.behavior.states_vector~=2);
+    states = unique(states_vector);
     % Variable_names has zeros in the columns of non present states
     Variable_names = {'Q','T','W','WT','LT','WL','WLT'};
     Variables = zeros(size(analyses.single_cell.calcium.mean,1),length(Variable_names));
