@@ -305,6 +305,37 @@ for id_TS = 1:length(exp_list)
     save([exp_list(id_TS).save_path 'analyses.mat'], 'analyses');
     save([exp_list(id_TS).save_path 'data_noL.mat'], 'data');
 end
+%% compute mean duration of behavioural states
+
+for id_TS = 1:length(exp_list)
+    load([exp_list(id_TS).save_path 'params.mat']);
+    if exist([exp_list(id_TS).save_path 'analyses.mat'],'file')
+        load([exp_list(id_TS).save_path 'analyses.mat']);
+    end
+    
+    if params.stimulus == 1        
+        load([exp_list(id_TS).save_path 'raw_state_var.mat']);   
+        analyses.behavior.duration = mean_state_dur(raw_state_var);
+    end
+    %cell for the boxplot
+    behavioral_state_duration = {analyses.behavior.duration.Quite analyses.behavior.duration.locomotion analyses.behavior.duration.whisking analyses.behavior.duration.stimulus};
+
+    col= @(x)reshape(x,numel(x),1);
+    boxplot2=@(C,varargin)boxplot(cell2mat(cellfun(col,col(C),'uni',0)),cell2mat(arrayfun(@(I)I*ones(numel(C{I}),1),col(1:numel(C)),'uni',0)),varargin{:});
+    
+    figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+    boxplot2(behavioral_state_duration)
+    title('Behavioral state duration')
+    ylabel('Duration (s)','FontSize',14)
+    xlabel('Behavioral states','FontSize',14)
+    set(gca,'XTicklabels',{'Quiet' 'Locomotion' 'Whisking' 'Stimulus'})
+        
+    saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_behavioral_state_duration.fig']);
+    saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_behavioral_state_duration.png']);
+    close
+    
+    save([exp_list(id_TS).save_path 'analyses.mat'], 'analyses');
+end
 
 %% compute single ROI information theory
 
