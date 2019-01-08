@@ -2,6 +2,7 @@ function analyses = pairwise_correlations(data,analyses,params)
 %correlations: columns are global, Q, W, WL (and T)  
 
 calcium = data.C_df;
+% calcium = data.S;
 vector_states = analyses.behavior.states_vector;
 if params.stimulus~=0
     %recompute state vector
