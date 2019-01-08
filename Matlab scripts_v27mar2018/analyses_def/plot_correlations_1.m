@@ -3,7 +3,7 @@ function [] = plot_correlations_1(analyses,params)
 if params.stimulus == 0
     if isfield(analyses,'corr')
         subplot(3,5,1);
-        hold on; scatter(analyses.corr.distances(~isnan(analyses.corr.distances)),...
+        hold on; scatter(analyses.corr.distances(~isnan(analyses.corr.global.values)),...
             analyses.corr.global.values(~isnan(analyses.corr.global.values)));
         title('global correlations');
         subplot(3,5,6);
@@ -20,7 +20,7 @@ if params.stimulus == 0
         
         if isfield(analyses.corr,'Q')
             subplot(3,5,2);
-            hold on; scatter(analyses.corr.distances(~isnan(analyses.corr.distances)),...
+            hold on; scatter(analyses.corr.distances(~isnan(analyses.corr.Q.values)),...
                 analyses.corr.Q.values(~isnan(analyses.corr.Q.values)));
             title('Q correlations');
             subplot(3,5,7);
@@ -40,7 +40,7 @@ if params.stimulus == 0
         
         if isfield(analyses.corr,'W')
             subplot(3,5,3);
-            hold on; scatter(analyses.corr.distances(~isnan(analyses.corr.distances)),...
+            hold on; scatter(analyses.corr.distances(~isnan(analyses.corr.W.values)),...
                 analyses.corr.W.values(~isnan(analyses.corr.W.values)));
             title('W correlations');
             subplot(3,5,8);
@@ -60,7 +60,7 @@ if params.stimulus == 0
         
         if isfield(analyses.corr,'partial')
             subplot(3,5,4);
-            hold on; scatter(analyses.corr.distances(~isnan(analyses.corr.distances)),...
+            hold on; scatter(analyses.corr.distances(~isnan(analyses.corr.partial.values)),...
                 analyses.corr.partial.values(~isnan(analyses.corr.partial.values)));
             title('partial correlations');
             subplot(3,5,9);
@@ -80,7 +80,7 @@ if params.stimulus == 0
         
         if isfield(analyses.corr,'WL')
             subplot(3,5,5);
-            hold on; scatter(analyses.corr.distances(~isnan(analyses.corr.distances)),...
+            hold on; scatter(analyses.corr.distances(~isnan(analyses.corr.WL.values)),...
                 analyses.corr.WL.values(~isnan(analyses.corr.WL.values)));
             title('WL correlations');
             subplot(3,5,10);

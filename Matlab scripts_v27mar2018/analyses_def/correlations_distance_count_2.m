@@ -16,6 +16,15 @@ if isfield(analyses,'corr')
     dist_G = analyses.corr.distances(analyses.corr.global.p<0.05);
     analyses.corr.global.sign.value = corr_G;
     analyses.corr.global.sign.dist = dist_G;
+    analyses.corr.stats.dist(1) = mean(dist_G);
+    analyses.corr.stats.dist_pos(1) = mean(dist_G(corr_G>=0));
+    if isnan(analyses.corr.stats.dist_pos(1))
+        analyses.corr.stats.dist_pos(1)=0;
+    end
+    analyses.corr.stats.dist_neg(1) = mean(dist_G(corr_G<0));
+    if isnan(analyses.corr.stats.dist_neg(1))
+        analyses.corr.stats.dist_neg(1)=0;
+    end
     
     [dist_G_tot,~,~] =...
         histcounts(dist_G,... 
@@ -41,6 +50,16 @@ if isfield(analyses,'corr')
         dist_Q = analyses.corr.distances(analyses.corr.Q.p<0.05);
         analyses.corr.Q.sign.value = corr_Q;
         analyses.corr.Q.sign.dist = dist_Q;
+        analyses.corr.stats.dist(3) = mean(dist_Q);
+        analyses.corr.stats.dist_pos(3) = mean(dist_Q(corr_Q>=0));
+        if isnan(analyses.corr.stats.dist_pos(3))
+            analyses.corr.stats.dist_pos(3)=0;
+        end
+        analyses.corr.stats.dist_neg(3) = mean(dist_Q(corr_Q<0));
+        if isnan(analyses.corr.stats.dist_neg(3))
+            analyses.corr.stats.dist_neg(3)=0;
+        end
+    
         [dist_Q_tot,~,~] =...
             histcounts(dist_Q,...
             dist_edges,'Normalization',normal);
@@ -59,6 +78,10 @@ if isfield(analyses,'corr')
         subplot(3,6,14); plot(dist_edges(1:end-1)+(dist_edges(2)-dist_edges(1))/2,...
             dist_Q_neg,'k','LineWidth',2);
         ylabel('p'); xlabel('dist'); title('Q neg');
+    else
+        analyses.corr.stats.dist(3) = 0;    
+        analyses.corr.stats.dist_pos(3) = 0;
+        analyses.corr.stats.dist_neg(3) = 0;
     end
     
     if isfield(analyses.corr,'partial')
@@ -66,6 +89,16 @@ if isfield(analyses,'corr')
         dist_partial = analyses.corr.distances(analyses.corr.partial.p<0.05);
         analyses.corr.partial.sign.value = corr_partial;
         analyses.corr.partial.sign.dist = dist_partial;
+        analyses.corr.stats.dist(2) = mean(dist_partial);
+        analyses.corr.stats.dist_pos(2) = mean(dist_partial(corr_partial>=0));
+        if isnan(analyses.corr.stats.dist_pos(2))
+            analyses.corr.stats.dist_pos(2)=0;
+        end
+        analyses.corr.stats.dist_neg(2) = mean(dist_partial(corr_partial<0));
+        if isnan(analyses.corr.stats.dist_neg(2))
+            analyses.corr.stats.dist_neg(2)=0;
+        end
+        
         [dist_partial_tot,~,~] =...
             histcounts(dist_partial,...
             dist_edges,'Normalization',normal);
@@ -84,6 +117,10 @@ if isfield(analyses,'corr')
         subplot(3,6,15); plot(dist_edges(1:end-1)+(dist_edges(2)-dist_edges(1))/2,...
             dist_partial_neg,'k','LineWidth',2);
         ylabel('p'); xlabel('dist'); title('partial neg');
+    else
+        analyses.corr.stats.dist(2) = 0;
+        analyses.corr.stats.dist_pos(2) = 0;
+        analyses.corr.stats.dist_neg(2) = 0;
     end
     
     if isfield(analyses.corr,'W')
@@ -91,6 +128,16 @@ if isfield(analyses,'corr')
         dist_W = analyses.corr.distances(analyses.corr.W.p<0.05);
         analyses.corr.W.sign.value = corr_W;
         analyses.corr.W.sign.dist = dist_W;
+        analyses.corr.stats.dist(4) = mean(dist_W);
+        analyses.corr.stats.dist_pos(4) = mean(dist_W(corr_W>=0));
+        if isnan(analyses.corr.stats.dist_pos(4))
+            analyses.corr.stats.dist_pos(4)=0;
+        end
+        analyses.corr.stats.dist_neg(4) = mean(dist_W(corr_W<0));
+        if isnan(analyses.corr.stats.dist_neg(4))
+            analyses.corr.stats.dist_neg(4)=0;
+        end
+        
         [dist_W_tot,~,~] =...
             histcounts(dist_W,...
             dist_edges,'Normalization',normal);
@@ -109,6 +156,10 @@ if isfield(analyses,'corr')
         subplot(3,6,16); plot(dist_edges(1:end-1)+(dist_edges(2)-dist_edges(1))/2,...
             dist_W_neg,'k','LineWidth',2);
         ylabel('p'); xlabel('dist'); title('W neg');
+    else
+        analyses.corr.stats.dist(4) = 0;
+        analyses.corr.stats.dist_pos(4) = 0;
+        analyses.corr.stats.dist_neg(4) = 0;
     end
     
     if isfield(analyses.corr,'WL')
@@ -116,6 +167,16 @@ if isfield(analyses,'corr')
         dist_WL = analyses.corr.distances(analyses.corr.WL.p<0.05);
         analyses.corr.WL.sign.value = corr_WL;
         analyses.corr.WL.sign.dist = dist_WL;
+        analyses.corr.stats.dist(5) = mean(dist_WL);
+        analyses.corr.stats.dist_pos(5) = mean(dist_WL(corr_WL>=0));
+        if isnan(analyses.corr.stats.dist_pos(5))
+            analyses.corr.stats.dist_pos(5)=0;
+        end
+        analyses.corr.stats.dist_neg(5) = mean(dist_WL(corr_WL<0));
+        if isnan(analyses.corr.stats.dist_neg(5))
+            analyses.corr.stats.dist_neg(5)=0;
+        end
+        
         [dist_WL_tot,~,~] =...
             histcounts(dist_WL,...
             dist_edges,'Normalization',normal);
@@ -134,9 +195,13 @@ if isfield(analyses,'corr')
         subplot(3,6,17); plot(dist_edges(1:end-1)+(dist_edges(2)-dist_edges(1))/2,...
             dist_WL_neg,'k','LineWidth',2);
         ylabel('p'); xlabel('dist'); title('WL neg');
+    else
+        analyses.corr.stats.dist(5) = 0;
+        analyses.corr.stats.dist_pos(5) = 0;
+        analyses.corr.stats.dist_neg(5) = 0;
     end
     
-    if isfield(analyses.corr,'T')aN;
+    if isfield(analyses.corr,'T')
         corr_T = analyses.corr.T.values(analyses.corr.T.p<0.05);
         dist_T = analyses.corr.distances(analyses.corr.T.p<0.05);
         analyses.corr.T.sign.value = corr_T;
@@ -251,6 +316,7 @@ if isfield(analyses,'corr')
                 histcounts(dist_T_sh(corr_T<0),...
                 dist_edges,'Normalization',normal);
         end
+        
         
         
     end
@@ -371,8 +437,10 @@ if isfield(analyses,'corr')
         ylim([0 Inf]);
         dist_T_neg_sh = mean(dist_T_neg_sh,2);
     end
-    
-    
+else
+    analyses.corr.stats.dist(1) = 0;
+    analyses.corr.stats.dist_pos(1) = 0;
+    analyses.corr.stats.dist_neg(1) = 0;
 end
 
 end
