@@ -436,49 +436,82 @@ end
 %     end
 % end
 % 
-% %% correlation analyses
-% 
-% for id_TS = 1:length(exp_list)
-%     load([exp_list(id_TS).save_path 'params.mat']);
-%     if exist([exp_list(id_TS).save_path 'analyses.mat'],'file')
-%         load([exp_list(id_TS).save_path 'analyses.mat']);
-%     
-%         %run analyses only for data without stimulus
-%         if params.stimulus == 0
-%             load([exp_list(id_TS).save_path 'data_noL.mat']);
-% 
-%             analyses = pairwise_correlations(data,analyses,params);
-%             [analyses, params] = correlations_distance_count(analyses,params);
-%             
-%             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
-%             plot_correlations_2(analyses,params)
-%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_states.png']);
-%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_states.fig']);
-%             close
-%             
-%             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
-%             plot_correlations_1(analyses,params)
-%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations.png']);
-%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations.fig']);
-%             close
-%             
-%             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
-%             [analyses, params] = correlations_distance_count_2(analyses,params);
-%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_sign.png']);
-%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_sign.fig']);
-%             close
-%             
-%             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
-%             summary_corr_plot(analyses,params);
-%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_summary.png']);
-%             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_summary.fig']);
-%             close
-%             
-%             
-%             save([exp_list(id_TS).save_path 'analyses.mat'], 'analyses');
-%             save([exp_list(id_TS).save_path 'params.mat'], 'params');
-%         end
-%     else
-%         error('This dataset does not have behavioral analyses!')
-%     end
-% end
+%% correlation analyses
+
+for id_TS = 1%:length(exp_list)
+    load([exp_list(id_TS).save_path 'params.mat']);
+    if exist([exp_list(id_TS).save_path 'analyses.mat'],'file')
+        load([exp_list(id_TS).save_path 'analyses.mat']);
+    
+        %run analyses only for data without stimulus
+        if params.stimulus == 0
+            load([exp_list(id_TS).save_path 'data_noL.mat']);
+
+            analyses = pairwise_correlations(data,analyses,params);
+            [analyses, params] = correlations_distance_count(analyses,params);
+            
+            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+            plot_correlations_2(analyses,params)
+            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_states.png']);
+            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_states.fig']);
+            close
+            
+            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+            plot_correlations_1(analyses,params)
+            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations.png']);
+            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations.fig']);
+            close
+            
+            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+            [analyses, params] = correlations_distance_count_2(analyses,params);
+            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_sign.png']);
+            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_sign.fig']);
+            close
+            
+            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+            summary_corr_plot(analyses,params);
+            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_summary.png']);
+            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_summary.fig']);
+            close
+            
+            
+            save([exp_list(id_TS).save_path 'analyses.mat'], 'analyses');
+            save([exp_list(id_TS).save_path 'params.mat'], 'params');
+        else
+            load([exp_list(id_TS).save_path 'data_noL.mat']);
+
+            analyses = pairwise_correlations(data,analyses,params);
+            [analyses, params] = correlations_distance_count(analyses,params);
+            
+            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+            plot_correlations_2(analyses,params)
+            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_states.png']);
+            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_states.fig']);
+            close
+            
+            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+            plot_correlations_1(analyses,params)
+            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations.png']);
+            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations.fig']);
+            close
+            
+            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+            [analyses, params] = correlations_distance_count_2(analyses,params);
+            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_sign.png']);
+            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_sign.fig']);
+            close
+            
+            figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
+            summary_corr_plot(analyses,params);
+            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_summary.png']);
+            saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_summary.fig']);
+            close
+            
+            
+            %save([exp_list(id_TS).save_path 'analyses.mat'], 'analyses');
+            %save([exp_list(id_TS).save_path 'params.mat'], 'params');
+        end
+    else
+        error('This dataset does not have behavioral analyses!')
+    end
+end
