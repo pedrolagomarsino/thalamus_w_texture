@@ -3,9 +3,9 @@ clear all;
 
 %% create list with info on path, animals and acquisition day of each TS
 %list of days of acquisitions
-data_path = 'C:\Users\plagomarsino\work\Thalamus proyect\Whisking on Texture\Data';
+data_path = 'C:\Users\plagomarsino\work\Data\Endoscopic_imaging_Whisking_Without_texture';
 %data_path = 'C:\Users\Pedro\for Pedro\example dataset';
-save_path = 'C:\Users\plagomarsino\work\Thalamus proyect\Whisking on Texture\Analysis';
+save_path = 'C:\Users\plagomarsino\work\MLC\Monica analysis on old data';
 %save_path = 'C:\Users\Pedro\for Pedro\example analyses\20180302\example';
 curr_dir = pwd;
 list_day = dir(data_path);
@@ -103,6 +103,7 @@ for id_TS = 1:length(exp_list)
     end
     raw_state_var = load_state_var_from_csv(csv_path);
     save([exp_list(id_TS).save_path 'raw_state_var.mat'], 'raw_state_var');
+    
 end
 
 %% build tag for each exp
@@ -235,7 +236,7 @@ end
 
 for id_TS = 1:length(exp_list)
     load([exp_list(id_TS).save_path 'params.mat']);
-    %if params.stimulus == 0 
+    %if params.stimulus == 0
     load([exp_list(id_TS).save_path 'raw_state_var.mat']);
     load([exp_list(id_TS).save_path 'processed_var.mat']);
     figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
@@ -487,25 +488,25 @@ for id_TS = 1%:length(exp_list)
             plot_correlations_2(analyses,params)
             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_states.png']);
             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_states.fig']);
-            close
+            %close
             
             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
             plot_correlations_1(analyses,params)
             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations.png']);
             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations.fig']);
-            close
+            %close
             
             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
             [analyses, params] = correlations_distance_count_2(analyses,params);
             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_sign.png']);
             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_sign.fig']);
-            close
+            %close
             
             figure('Units','Normalized','Position',[0.1 0.1 0.8 0.8]);
             summary_corr_plot(analyses,params);
             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_summary.png']);
             saveas(gcf,[exp_list(id_TS).save_path exp_list(id_TS).tag '_correlations_summary.fig']);
-            close
+            %close
             
             
             %save([exp_list(id_TS).save_path 'analyses.mat'], 'analyses');
