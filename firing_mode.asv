@@ -8,10 +8,35 @@
     % d) AUC ?
 % search for clusters in this four dimensional space
 %load('C:\Users\plagomarsino\work\Thalamus_proyect\Whisking on Texture\Data\20180412\Mouse_2314\TSeries-04122018-0853-1003\Post_proc_2\TS1003_C_no_stim_times.mat');
-%% find peaks and valleys to define a with of event
-for neuron = 2;
-events = find_events(data.C_df(neuron,:),data.framePeriod);
-[peak_amp,rise_time,decay_time,AUC] = event_analysis(data.C_df(neuron,:),events,data.framePeriod);
+%% find event info to clusterize 
+time = data.frameTimes;
+period = data.framePeriod;
+events_space = [];
+for neuron = 1:data.numero_neuronas
+    events = find_events(data.C_df(neuron,:),period);
+    [peak_amp,rise_time,decay_time,AUC_event] = event_analysis(data.C_df(neuron,:),events,period);
+    events_space = [events_space; peak_amp,rise_time,decay_time,AUC_event];
+    clear peak_amp rise_time decay_time AUC_event events
+end
+%% find increase calcium intensity periods
+All_inc = [];
+All_inc_time = [];
+for neuron = 1:data.numero_neuronas
+    [increments_time,increments_value] = find_increments(data.C_df(neuron,:),period);
+    All_inc = [All_inc ; increments_value];
+    All_inc_time = [All_inc_time ; increments_time];
+end
+
+%% find EVERY peak info to cluster
+peaks_space = [];
+for neuron = 1:data.numero_neuronas
+    events = find_events(data.C_df(neuron,:),period);
+    [peak_amp,rise_time,decay_time,AUC_peak] = peak_analysis(data.C_df(neuron,:),events,period);
+    peaks_space = [peaks_space ; peak_amp,rise_time,decay_time,AUC_peak];
+end
+%% Clustering
+kmeans_analysis(peaks_space,2)
+kmeans_analysis(events_space,3)
 %% plot
 % figure
 % subplot(2,1,1)
@@ -106,12 +131,13 @@ events.valleys.time = indxval*period;
 events.event_init = rise_events;
 events.event_end = decay_valley_indx;
 events.n_events = length(events.event_init);
+events.n_peaks = length(events.peaks.value);
 end
 
-function [peak_amp,rise_time,decay_time,AUC_event] = event_analysis(trace,events,period)
+function [peak_amp,rise_time,decay_time,AUC_event] = event_analysis(cal_trace,events,period)
 
 n = events.n_events;
-time = (1:length(trace))*period;
+time = (0:length(cal_trace)-1)*period;
 peak_amp = zeros(n,1);
 rise_time = zeros(n,1);
 decay_time = zeros(n,1);
@@ -120,13 +146,107 @@ AUC_event = zeros(n,1);
 for i = 1:n
     init = round(events.valleys.time(events.event_init(i))/period);
     fin = round(events.valleys.time(events.event_end(i))/period);
-    [peak_amp(i),idx] = max(trace(init:fin));
+    [peak_amp(i),idx] = max(cal_trace(init:fin));
     
     rise_time(i) = (idx-1)*period;
     
     decay_time(i) = (fin-init)*period - rise_time(i);
     
-    AUC_event(i) = trapz(time(init:fin),trace(init:fin));
+    AUC_event(i) = trapz(time(init:fin),cal_trace(init:fin));
 end
+end
+
+function [peak_amp,rise_time,decay_time,AUC_peak] = peak_analysis(cal_trace,events,period)
+
+n = events.n_peaks;
+time = (0:length(cal_trace)-1)*period;
+peak_amp = zeros(n,1);
+rise_time = zeros(n,1);
+decay_time = zeros(n,1);
+AUC_peak = zeros(n,1);
+
+for i = 1:n
+    init_val = find(events.valleys.time < events.peaks.time(i),1,'last');
+    end_val  = find(events.valleys.time > events.peaks.time(i),1);
+    
+    if ~isempty(init_val) && ~isempty(end_val)
+        peak_amp(i) = events.peaks.value(i)-events.valleys.value(init_val);
+        
+        rise_time(i) = events.peaks.time(i)-events.valleys.time(init_val);
+        
+        decay_time(i) = events.valleys.time(end_val)-events.peaks.time(i);
+        
+        AUC_peak(i) = trapz(time(round(events.valleys.time(init_val)/period:events.valleys.time(end_val)/period)),cal_trace(round(events.valleys.time(init_val)/period:events.valleys.time(end_val)/period)));
+    end
+end
+peak_amp(peak_amp==0)     = [];
+rise_time(rise_time==0)   = [];
+decay_time(decay_time==0) = [];
+AUC_peak(AUC_peak==0)     = [];
+end
+
+function [increments_time,increments_value] = find_increments(trace,period)
+% This function finds the increment in calcium signal for each period of
+% increasing intensity.
+delta_intensity = diff(trace);
+increments_time = (find(delta_intensity>0)*period)';
+increments_value = delta_intensity(delta_intensity>0)';
+
+end
+
+function [] = kmeans_analysis(data,k,plot_variables)
+var_names = {'Peak amplitud','Rise Time', 'Decay Time','AUC'};
+if exist('plot_variables','var')
+    plot_idx = plot_variables;
+else
+    plot_idx = [1 2 3];
+end
+[idx,C_p,sumd] = kmeans(data,k);
+figure()
+hold on
+for i = 1:k
+    plot3(data(idx==i,plot_idx(1)),data(idx==i,plot_idx(2)),data(idx==i,plot_idx(3)),'.')
+end
+plot3(C_p(:,1),C_p(:,2),C_p(:,3),'ko');
+plot3(C_p(:,1),C_p(:,2),C_p(:,3),'kx');
+xlabel(var_names{plot_idx(1)});
+ylabel(var_names{plot_idx(2)});
+zlabel(var_names{plot_idx(3)});
+view(-137,10);
+grid on
+
+figure()
+[silh2,h] = silhouette(data,idx,'sqEuclidean');
+
+sprintf(['Mean Silhouette coefficient','\n Group 1\t',num2str(mean(silh2(idx==1))),'\t n = ',num2str(sum(idx==1)),'\n Group 2\t',num2str(mean(silh2(idx==2))),...
+    '\t n = ',num2str(sum(idx==2)),'\n Total \t',num2str(mean(silh2))])
+
+
+end
+
+function [] = hierarchical_clustering(data,plot_variables)
+clustTreeEuc = linkage(data,'average');
+
+figure()
+[h,nodes] = dendrogram(clustTreeEuc,12);
+h_gca = gca;
+h_gca.TickDir = 'out';
+h_gca.TickLength = [.002 0];
+%h_gca.XTickLabel = [];
+%%
+ptsymb = {'bs','r^','md','go','c+'};
+figure()
+hidx = cluster(clustTreeEuc,'criterion','distance','cutoff',10);
+for i = 1:5
+    clust = find(hidx==i);
+    plot3(peaks_space(clust,1),peaks_space(clust,2),peaks_space(clust,3),ptsymb{i});
+    hold on
+end
+hold off
+xlabel('Peak amplitud');
+ylabel('Rise time');
+zlabel('Decay time');
+view(-137,10);
+grid on
 end
     
