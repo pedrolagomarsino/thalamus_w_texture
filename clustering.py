@@ -1,18 +1,20 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import h5py
+import scipy.signal as sig
 file_name = 'C:/Users/plagomarsino/work/Thalamus_proyect/Whisking on Texture/\
 Data/20180412/Mouse_2314/TSeries-04122018-0853-1003/Post_proc_2/TS1003_C_no_stim_times.mat'
 f = h5py.File(file_name,'r')
 trace = f.get('data/C_df')
 print(trace)
-
+trace.shape
 def events = find_events(trace,period):
     """
     Find events in paninski processed calcium traces.
     Events are defined as calcium activity between the first valley
     preceding a peak, and the next valley whos value (Df/F) is at most half
     the intensity difference between the peak and the valley.
-    
+
     Obs: whit this definition each event can contain several other peaks and
     valleys, and the half amplitud constrain is not necesary between the
     highest peak and the lowest valley in the event.
@@ -23,25 +25,30 @@ def events = find_events(trace,period):
     period = period of sampling. data.framePeriod in Monica's code
     ----------------------------------------------------------------------------
     OUTPUTS
-    find_events returns "events" a struct array containing fields:
-        peaks: all peaks above one std of the trace
-        value: array of the DF/F value of peaks
-        time: array of time in seconds of each peak in peaks
-        valleys: all valleys
-        value: array of the DF/F value of valleys
-        time: array of time in seconds of each valley in valleys
+    find_events returns a nested dictionary "events" containing keys:
+        peaks: all peaks above one std of the trace containing keys:
+            value: array of the DF/F value of peaks
+            time: array of time in seconds of each peak in peaks
+        valleys: all valleys containing keys:
+            value: array of the DF/F value of valleys
+            time: array of time in seconds of each valley in valleys
 
         rise_init: array of valleys-indexes with starting valleys of events
         decay_indx: array of valleys-indexes with ending valleys of events
         n_events: number of events detected
     """
-    events = struct();
+    events = {'peaks': {'value','time'},
+              'valleys':{'value','time'},
+              'rise_init',
+              'decay_indx',
+              'n_events'}
     # findpeaks
-    [peaks,indx] = findpeaks(trace);
-    peaksbig = peaks(peaks>std(trace));
-    indxbig = indx(peaks>std(trace));
+    peaks, prop_peaks= sig.find_peaks(trace[:,1],np.std(trace[:,1]))
     # find valleys
-    [valley,indxval] = findpeaks(-trace);
+    valley, prop_valley = sig.find_peaks(-trace[:,1])
+    extremes = np.sort(np.concatenate((peaks,valley)))
+    rise_valley_indx = extremes[extremes==peaks]
+    print(rise_valley_indx)
     rise_valley_indx = [];
     decay_valley_indx = [];
     for i = 1:length(peaksbig)
