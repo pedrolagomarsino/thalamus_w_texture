@@ -74,9 +74,10 @@ function events = find_events(trace,period)
 %       value: array of the DF/F value of valleys 
 %       time: array of time in seconds of each valley in valleys 
 %    
-%   rise_init: array of valleys-indexes with starting valleys of events 
-%   decay_indx: array of valleys-indexes with ending valleys of events
+%   event_init: array of valleys-indexes with starting valleys of events 
+%   event_end: array of valleys-indexes with ending valleys of events
 %   n_events: number of events detected
+%   n_peaks: number of peaks above threshold
 events = struct();
 % findpeaks
 [peaks,indx] = findpeaks(trace);

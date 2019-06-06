@@ -5,10 +5,10 @@ import scipy.signal as sig
 file_name = 'C:/Users/plagomarsino/work/Thalamus_proyect/Whisking on Texture/\
 Data/20180412/Mouse_2314/TSeries-04122018-0853-1003/Post_proc_2/TS1003_C_no_stim_times.mat'
 f = h5py.File(file_name,'r')
-trace = f.get('data/C_df')
-print(trace)
-trace.shape
-def events = find_events(trace,period):
+trace_all = f.get('data/C_df')
+period = f.get('data/framePeriod')
+
+def find_events(trace,period):
     """
     Find events in paninski processed calcium traces.
     Events are defined as calcium activity between the first valley
@@ -37,39 +37,40 @@ def events = find_events(trace,period):
         decay_indx: array of valleys-indexes with ending valleys of events
         n_events: number of events detected
     """
-    events = {'peaks': {'value','time'},
-              'valleys':{'value','time'},
-              'rise_init',
-              'decay_indx',
-              'n_events'}
+    events = {'peaks'  : {'value':None,'time':None},
+              'valleys':{'value':None,'time':None},
+              'event_init':None,
+              'event_end' :None,
+              'n_events'  :None,
+              'n_peaks'   :None}
     # findpeaks
-    peaks, prop_peaks= sig.find_peaks(trace[:,1],np.std(trace[:,1]))
+    peaks, prop_peaks = sig.find_peaks(trace,np.std(trace))
     # find valleys
-    valley, prop_valley = sig.find_peaks(-trace[:,1])
+    valley, prop_valley = sig.find_peaks(-trace)
     extremes = np.sort(np.concatenate((peaks,valley)))
-    rise_valley_indx = extremes[extremes==peaks]
-    print(rise_valley_indx)
-    rise_valley_indx = [];
-    decay_valley_indx = [];
-    for i = 1:length(peaksbig)
-        rise_valley_indx = [rise_valley_indx , find(indxval<indxbig(i),1,'last')];
-        if (isempty(decay_valley_indx) || indxbig(i)>=indxval(decay_valley_indx(end))) && ~isempty(rise_valley_indx)
-            decay_indx = find(indxval>indxval(rise_valley_indx(end)) & -valley<=(peaksbig(i)-.5*(peaksbig(i)+valley(rise_valley_indx(end)))),1);
-            decay_valley_indx = [decay_valley_indx ,decay_indx ];
-        end
-    end
+    rise_valley_indx = [extremes[idx-1] for peak in peaks for idx in np.where(extremes==peak)[0] if idx>0]
+    decay_valley_indx = [extremes[idx] for init in rise_valley_indx for idx in \
+                        np.nditer(next((i for i,v in enumerate(np.logical_and(extremes>init,trace[extremes]\
+                        <= trace[init]+(trace[extremes[np.where(extremes==init)[0]+1]]-trace[init])*.5))\
+                        if v==True),-100)) if idx != -100]
 
-    rise_events = rise_valley_indx(1);
-    for i = 2:length(decay_valley_indx)
-        rise_events = [rise_events , rise_valley_indx(find(rise_valley_indx<decay_valley_indx(i) & rise_valley_indx>=decay_valley_indx(i-1),1)) ];
-    end
+    rise_events  = rise_valley_indx[0:1]
+    decay_events = decay_valley_indx[0:1]
+    for i,v in enumerate(decay_valley_indx[1:]):
+        val = rise_valley_indx[i+1]
+        if val>=decay_events[-1]:
+            rise_events.append(val)
+            decay_events.append(v)
 
-    events.peaks.value = peaksbig;
-    events.peaks.time = indxbig*period;
-    events.valleys.value = -valley;
-    events.valleys.time = indxval*period;
-    events.event_init = rise_events;
-    events.event_end = decay_valley_indx;
-    events.n_events = length(events.event_init);
-    events.n_peaks = length(events.peaks.value);
-    end
+    events['peaks']['value'] = prop_peaks['peak_heights']
+    events['peaks']['time'] = peaks*period
+    events['valleys']['value'] = trace[valley]
+    events['valleys']['time'] = valley*period
+    events['event_init'] = rise_events
+    events['event_end'] = decay_valley_indx
+    events['n_events'] = len(rise_events)
+    events['n_peaks'] = len(peaks)
+
+    return events
+
+events = find_events(trace[:,1],period)
