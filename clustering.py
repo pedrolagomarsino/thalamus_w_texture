@@ -1,9 +1,13 @@
 import numpy as np
+import matplotlib
+matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 import h5py
 import scipy.signal as sig
-from sklearn.cluster import KMeans
-
+from scipy.cluster.hierarchy import dendrogram, linkage
+from sklearn import metrics
+from sklearn.cluster import AgglomerativeClustering, DBSCAN, KMeans
+from mpl_toolkits.mplot3d import Axes3D
 file_name = 'C:/Users/plagomarsino/work/Thalamus_proyect/Whisking on Texture/\
 Data/20180412/Mouse_2314/TSeries-04122018-0853-1003/Post_proc_2/TS1003_C_no_stim_times.mat'
 f = h5py.File(file_name,'r')
@@ -135,6 +139,35 @@ def peak_analysis(trace,events,period):
 
     return [peak_amp,rise_time,decay_time,AUC_peak]
 
+def clustering_fit_plot(algorithm, data, name, plot=True,axis=[0,1,2],axis_name=['peak_amp','rise_time','decay_time','AUC']):
+    """
+    Cluster and plot using the specified algorithm
+    """
+    cluster = algorithm
+    cluster.fit_predict(data)
+    labels = cluster.labels_
+    if plot:
+        unique_labels = set(labels)
+        colors = [plt.cm.Spectral(each)
+                  for each in np.linspace(0, 1, len(unique_labels))]
+        fig = plt.figure()
+        ax = fig.add_subplot(111,projection='3d')
+
+        for k, col in zip(unique_labels, colors):
+            if k == -1:
+                # Black used for noise.
+                col = [0, 0, 0, 1]
+            class_member_mask = (labels == k)
+            xy = data[class_member_mask]
+            #plt.plot(xy[:, axis[0]], xy[:, axis[1]],  xy[:, axis[2]],'o', markerfacecolor=tuple(col), markeredgecolor=tuple(col))
+            ax.scatter(xy[:, axis[0]], xy[:, axis[1]],  xy[:, axis[2]],color=tuple(col))
+        ax.set_xlabel(axis_name[axis[0]])
+        ax.set_ylabel(axis_name[axis[1]])
+        ax.set_zlabel(axis_name[axis[2]])
+        plt.title(name)
+        plt.show()
+        return cluster
+
 def find_increments(trace,period):
     """
     Finds the increment in calcium signal for each period of increasing intensity.
@@ -144,6 +177,9 @@ def find_increments(trace,period):
     increments_value = [v for i,v in enumerate(delta_intensity) if v>0]# increments_value = delta_intensity(delta_intensity>0)';
     return [increments_time,increments_value]
 
+##########################################
+##### Build events and peaks space #######
+##########################################
 events = find_events(trace_all[:,0],period)
 events_space = np.transpose(np.array(event_analysis(trace_all[:,0],events,period)))
 peaks_space = np.transpose(np.array(peak_analysis(trace_all[:,0],events,period)))
@@ -154,16 +190,45 @@ for i in range(1,len(trace_all[0])):
     peaks_space = np.concatenate((peaks_space, np.transpose(np.array(peak_analysis(trace_all[:,i],events,period)))),axis=0)
     increments_time,increments_value = np.concatenate(([increments_time,increments_value],\
     np.array(find_increments(trace_all[:,i],period))),axis=1)
-#plt.hist(increments_value,100)
-# X = np.transpose(np.array(events_space))#[events_space[0],events_space[1]]
-# np.shape(X)
-# kmeans = KMeans(n_clusters=2).fit(X)
-# np.shape(kmeans.cluster_centers_)
-# events_space = np.array(events_space)
-# whos(events_space)
-# whos
-# np.shape(events_space[3])
-# pepe=np.array([[3,2,1,2,2]])
-# pepes = np.concatenate((pepe,pepe),axis=0)
-# teta = np.concatenate((pepes,pepe),axis=0)
-# np.shape(teta)
+
+##############################################
+##### Histograms of calcium increments #######
+##############################################
+fig1 = plt.figure()
+plt.hist(increments_value,100)
+plt.show()
+################################
+##### Kmeans clustering ########
+################################
+
+kmeans_events = clustering_fit_plot(KMeans(n_clusters=2),events_space,name='kmeans')
+kmeans_peaks = clustering_fit_plot(KMeans(n_clusters=2),peaks_space,name='kmeans',axis=[1,2,0])
+
+#####################################
+##### Hierarchical clustering #######
+#####################################
+
+linked = linkage(peaks_space,'ward')
+plt.figure()
+dendrogram(linked,orientation='top',distance_sort = 'descending',show_leaf_counts = True)
+plt.show()
+
+Hierarchical_events = clustering_fit_plot(AgglomerativeClustering(n_clusters = 4, affinity = 'euclidean',\
+                    linkage = 'ward'),events_space,name='Hierarchical events',axis=[1,2,0])
+Hierarchical_peaks = clustering_fit_plot(AgglomerativeClustering(n_clusters = 3, affinity = 'euclidean',\
+                    linkage = 'ward'),peaks_space,name='Hierarchical peaks',axis=[1,2,0])
+
+################################
+##### DBSCAN clustering ########
+################################
+
+dbscan_events = clustering_fit_plot(DBSCAN(eps=.20,min_samples=2),events_space,name='DBSCAN events',axis=[1,2,0])
+dbscan_peaks = clustering_fit_plot(DBSCAN(eps = .7,min_samples=10),peaks_space,name='DBSCAN events',axis=[1,2,0])
+labels = dbscan_peaks.labels_
+# Number of clusters in labels, ignoring noise if present.
+n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+n_noise_ = list(labels).count(-1)
+
+print('Estimated number of clusters: %d' % n_clusters_)
+print('Estimated number of noise points: %d' % n_noise_)
+print("Silhouette Coefficient: %0.3f" % metrics.silhouette_score(peaks_space, labels))

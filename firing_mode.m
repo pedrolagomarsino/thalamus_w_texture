@@ -7,7 +7,7 @@
     % c) Decay time
     % d) AUC ?
 % search for clusters in this four dimensional space
-load('C:\Users\plagomarsino\work\Thalamus_proyect\Whisking on Texture\Data\20180412\Mouse_2314\TSeries-04122018-0853-1003\Post_proc_2\TS1003_C_no_stim_times.mat');
+%load('C:\Users\plagomarsino\work\Thalamus_proyect\Whisking on Texture\Data\20180412\Mouse_2314\TSeries-04122018-0853-1003\Post_proc_2\TS1003_C_no_stim_times.mat');
 %load('C:\Users\plagomarsino\work\Thalamus_proyect\Whisking on Texture\Data\20180920\Mouse_3430\TSeries-09202018-0956-1194\Post_proc_2\TS1194_C_no_stim_times.mat');
 %% find event info to clusterize 
 time = data.frameTimes;
